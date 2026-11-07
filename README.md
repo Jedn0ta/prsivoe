@@ -36,3 +36,11 @@ gradle wrapper --gradle-version 8.7
 ```
 
 Vyžaduje JDK 17 a Android SDK (platform 34).
+
+## Licence grafiky karet
+Obrázky karet (`app/src/main/assets/cards/`) pocházejí z fotografie
+„Bohemian pattern.png“ od uživatele **Countakeshi**, Wikimedia Commons
+(https://commons.wikimedia.org/wiki/File:Bohemian_pattern.png),
+licence **CC BY-SA 4.0** (https://creativecommons.org/licenses/by-sa/4.0/).
+Upraveno: rozřezáno na jednotlivé karty, upraven jas a kontrast.
+Upravené obrázky karet jsou šířeny pod stejnou licencí CC BY-SA 4.0.

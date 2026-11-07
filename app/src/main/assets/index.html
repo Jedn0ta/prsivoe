@@ -242,7 +242,7 @@ function aceCard(c,s){
  return o;
 }
 const IMG={}; // real card photos: assets/cards/<suit>_<rank>.jpg (e.g. srdce_7.jpg, kule_Q.jpg)
-function probe(){SUITS.forEach(s=>RANKS.forEach(r=>{const i=new Image();i.onload=()=>{IMG[s.key+r]=i.src;if(window.render&&deck)render();};i.src=`cards/${s.key}_${r}.jpg`;}));}
+function probe(){SUITS.forEach(s=>RANKS.forEach(r=>{IMG[s.key+r]=`cards/${s.key}_${r}.jpg`;const i=new Image();i.src=IMG[s.key+r];}));}
 const CACHE={};
 function cardSVG(c){
  if(IMG[c.suit+c.rank]) return `<img src="${IMG[c.suit+c.rank]}" style="width:100%;height:100%;object-fit:cover;display:block">`;
@@ -386,7 +386,8 @@ function end(w){
  const b=document.createElement('button');b.className='btn';b.style.fontSize='16px';b.style.padding='12px 22px';b.textContent='Další runda';b.onclick=newGame;o.appendChild(b);
  const r=document.createElement('div');r.className='rules';
  r.innerHTML='<b>Hospodská pravidla</b><br>• Přikládá se barva nebo hodnota.<br>• <b>Sedma</b> – další bere 2, sedmy se sčítají (přebiješ sedmou).<br>• <b>Eso</b> – další stojí, pokud nedá taky eso.<br>• <b>Svršek</b> – na cokoli (kromě na sedmu/eso v akci), mění barvu.<br>• Kdo se první zbaví karet, vyhrál.';
- o.appendChild(r);o.classList.add('show');
+ o.appendChild(r);
+ const cr=document.createElement('div');cr.style.cssText='font-size:10px;opacity:.6;max-width:320px';cr.innerHTML='Karty: „Bohemian pattern“, foto Countakeshi, Wikimedia Commons, licence CC BY-SA 4.0 (oříznuto a upraveno).';o.appendChild(cr);o.classList.add('show');
 }
 const closeOv=()=>$('overlay').classList.remove('show');
 $('newGame').onclick=newGame;
