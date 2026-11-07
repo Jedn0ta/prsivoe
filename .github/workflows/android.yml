@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -38,3 +38,15 @@ jobs:
           name: prsi-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
+
+      - name: Rename APK
+        run: cp app/build/outputs/apk/debug/app-debug.apk prsi.apk
+
+      - name: Publish latest release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: Prší – nejnovější verze
+          body: Hospodské Prší – instalovatelné APK (stáhni prsi.apk).
+          files: prsi.apk
+          make_latest: true
