@@ -1,0 +1,22 @@
+name: Fetch card source
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download image + license metadata
+        run: |
+          mkdir -p cardsrc
+          UA="PrsiGameBuild/1.0 (github.com/Jedn0ta/prsivoe)"
+          curl -sSL -A "$UA" "https://commons.wikimedia.org/w/api.php?action=query&titles=File:Bohemian_pattern.png&prop=imageinfo&iiprop=url|extmetadata|size&format=json" -o cardsrc/meta.json
+          URL=$(python3 -c "import json;d=json.load(open('cardsrc/meta.json'));p=list(d['query']['pages'].values())[0];print(p['imageinfo'][0]['url'])")
+          curl -sSL -A "$UA" "$URL" -o cardsrc/bohemian.png
+          ls -la cardsrc
+      - name: Commit to branch
+        run: |
+          git config user.name "github-actions"; git config user.email "actions@github.com"
+          git checkout -b cardsrc
+          git add cardsrc && git commit -m "card source" && git push -f origin cardsrc
