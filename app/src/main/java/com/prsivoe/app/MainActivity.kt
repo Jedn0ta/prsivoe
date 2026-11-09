@@ -19,7 +19,14 @@ class MainActivity : Activity() {
             settings.domStorageEnabled = true
             settings.cacheMode = android.webkit.WebSettings.LOAD_DEFAULT
             setBackgroundColor(0xFF0C3D24.toInt())
-            loadUrl("file:///android_asset/index.html")
+            webChromeClient = object : android.webkit.WebChromeClient() {
+                override fun onConsoleMessage(m: android.webkit.ConsoleMessage): Boolean {
+                    android.util.Log.d("PrsiJS", "${m.message()} @${m.sourceId()}:${m.lineNumber()}")
+                    return true
+                }
+            }
+            val ver = packageManager.getPackageInfo(packageName, 0).versionName
+            loadUrl("file:///android_asset/index.html?v=$ver")
         }
         setContentView(web)
         goImmersive()

@@ -91,7 +91,7 @@ header{flex:0 0 auto;display:flex;align-items:center;justify-content:space-betwe
 </head>
 <body>
 <header>
-  <div class="sign">🍺 U Zeleného stolu<small>HOSPODSKÉ PRŠÍ</small></div>
+  <div class="sign">🍺 U Zeleného stolu<small>HOSPODSKÉ PRŠÍ · <span id="ver">web</span></small></div>
   <div class="row"><button class="btn" id="sndBtn">🔊</button><button class="btn" id="newGame">Nová hra</button></div>
 </header>
 <div class="scene" id="scene">
@@ -119,6 +119,12 @@ header{flex:0 0 auto;display:flex;align-items:center;justify-content:space-betwe
   <div class="hand" id="hand"></div>
 </div>
 <div class="overlay" id="overlay"></div>
+<script>
+window.__errs=[];
+function __showErr(t){window.__errs.push(t);var d=document.getElementById('errbox');if(!d){d=document.createElement('div');d.id='errbox';d.style.cssText='position:fixed;left:6px;right:6px;bottom:6px;z-index:999;background:#300;color:#fff;font:12px monospace;padding:8px;border:2px solid #f55;border-radius:8px;white-space:pre-wrap;max-height:40vh;overflow:auto';(document.body||document.documentElement).appendChild(d);}d.textContent='CHYBA (pošli Claudovi):\n'+window.__errs.join('\n');}
+window.addEventListener('error',function(e){__showErr((e.message||e)+' @'+(e.lineno||'?')+':'+(e.colno||'?'));});
+window.addEventListener('unhandledrejection',function(e){__showErr('promise: '+(e.reason&&e.reason.message||e.reason));});
+</script>
 <script>
 /* ===================== CARD ART ===================== */
 const SUITS=[
@@ -392,6 +398,7 @@ function end(w){
 const closeOv=()=>$('overlay').classList.remove('show');
 $('newGame').onclick=newGame;
 $('sndBtn').onclick=()=>{SND=!SND;$('sndBtn').textContent=SND?'🔊':'🔇';};
+try{var _v=new URLSearchParams(location.search).get('v');if(_v)document.getElementById('ver').textContent='v'+_v;}catch(e){}
 probe();newGame();
 </script>
 </body>
