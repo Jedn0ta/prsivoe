@@ -8,7 +8,7 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;}
 body{font-family:Georgia,"Times New Roman",serif;color:#f5e6c4;overflow:hidden;user-select:none;
-  height:100dvh;display:flex;flex-direction:column;
+  height:100vh;height:100dvh;display:flex;flex-direction:column;
   background:
    radial-gradient(ellipse at 50% 8%,rgba(255,200,110,.38),rgba(0,0,0,0) 55%),
    radial-gradient(ellipse at 50% 120%,rgba(0,0,0,.75),rgba(0,0,0,0) 60%),
@@ -269,7 +269,7 @@ let deck,discard,topSuit,penalty,aceStop,cur,locked,score=[0,0,0];
 try{score=JSON.parse(localStorage.getItem('prsiScore'))||score;}catch(e){}
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;}
 function draw(n){const o=[];for(let i=0;i<n;i++){if(!deck.length){const t=discard.pop();deck=shuffle(discard);discard=[t];}if(!deck.length)break;o.push(deck.pop());}return o;}
-const top=()=>discard[discard.length-1];
+const topCard=()=>discard[discard.length-1];
 function newGame(){
  deck=shuffle(SUITS.flatMap(s=>RANKS.map(r=>({suit:s.key,rank:r}))));discard=[];penalty=0;aceStop=false;
  PL.forEach(p=>p.hand=draw(4));
@@ -283,7 +283,7 @@ function canPlay(c){
  if(aceStop) return c.rank==='A';
  if(penalty>0) return c.rank==='7';
  if(c.rank==='Q') return true;
- return c.suit===topSuit||c.rank===top().rank;
+ return c.suit===topSuit||c.rank===topCard().rank;
 }
 const hasMove=p=>p.hand.some(canPlay);
 function shout(t){const d=document.createElement('div');d.className='shout';d.textContent=t;$('scene').appendChild(d);setTimeout(()=>d.remove(),1400);}
@@ -310,7 +310,7 @@ function render(dealt=false){
   const rz=((c.suit.length*13+c.rank.charCodeAt(0)*7+i*29)%24)-12;e.style.setProperty('--rz',rz+'deg');
   e.style.transform=`rotateZ(${rz}deg)`;if(i===a.length-1)e.style.animation='toss .28s ease-out both';dz.appendChild(e);});
  const sb=$('suitBadge');
- if(topSuit!==top().suit||top().rank==='Q'){sb.style.display='flex';sb.innerHTML=`Hraje se: <b>${suitOf(topSuit).name}</b><svg width="18" height="18" viewBox="0 0 24 24">${sym(topSuit,12,12,22)}</svg>`;}
+ if(topSuit!==topCard().suit||topCard().rank==='Q'){sb.style.display='flex';sb.innerHTML=`Hraje se: <b>${suitOf(topSuit).name}</b><svg width="18" height="18" viewBox="0 0 24 24">${sym(topSuit,12,12,22)}</svg>`;}
  else sb.style.display='none';
  $('drawCap').textContent=penalty?`Líznout ${penalty}`:aceStop?'Stůj!':`Balík · ${deck.length}`;
  // my hand
