@@ -1,46 +1,43 @@
-# Prší 3D (Android)
+# Prší – hospodská klasika (Godot 4)
 
-Česká karetní hra **Prší** jako Android aplikace — hra ve 3D s jednohlavými
-mariášovými kartami (Srdce, Kule, Listy, Žaludy), hráč proti počítači.
-Jádro hry je webová stránka (`app/src/main/assets/index.html`) zabalená do
-nativního WebView.
+Česká karetní hra **Prší** pro Android s fotkami skutečných jednohlavých
+mariášek. Hraje se proti počítači (Pepa, Franta) nebo s kamarádem **přes Wi-Fi**.
 
-## Jak získat APK (bez Android Studia)
+**Stáhnout APK:** https://github.com/Jedn0ta/prsivoe/releases/download/latest/prsi.apk
 
-1. Nahraj tyto soubory do repozitáře (jsou tu všechny).
-2. Jdi na záložku **Actions** v repu → workflow **Build APK** se spustí sám
-   po pushi (nebo ho spusť ručně tlačítkem *Run workflow*).
-3. Po doběhnutí (pár minut) otevři běh → sekce **Artifacts** → stáhni
-   **prsi-debug-apk**. Uvnitř je `app-debug.apk`.
-4. Přenes APK do telefonu, povol *Instalace z neznámých zdrojů* a nainstaluj.
+## Ovládání
+- **Táhni kartu** prstem na odhazovací balíček, nebo ji **švihni nahoru**.
+- **Ťukni** na kartu (zvedne se) a ťukni znovu → zahraje se.
+- **Ťukni na balík** = líznout si / vzít trest za sedmu / stát po esu.
+- Svršek → vybereš barvu.
 
-> Jde o **debug** APK (podepsané debug klíčem) — pro vlastní hraní a
-> rozesílání kamarádům stačí. Pro Google Play by bylo potřeba release
-> podpis.
+## Hra přes Wi-Fi
+1. Oba telefony na stejné Wi-Fi.
+2. Jeden dá **Založit stůl na Wi-Fi**, může přisadit i Pepu (počítač).
+3. Druhý dá **Připojit se ke stolu** – stůl se objeví v seznamu sám.
+   Kdyby ne, opiš IP adresu, kterou ukazuje hostitel.
+4. Hostitel dá **Rozdat karty**.
 
-## Pravidla hry
-
+## Pravidla
 - Přikládá se karta stejné **barvy** nebo **hodnoty**.
-- **Sedma** — další hráč bere 2 (sedmy se sčítají).
-- **Eso** — další hráč stojí (přeskočí tah).
-- **Svršek** — žolík: hraje se na cokoli a určuje novou barvu.
-- Nemáš-li tah, líznеš si z balíčku.
-- Vyhrává ten, kdo se první zbaví všech karet.
+- **Sedma** – další bere 2, sedmy se sčítají (přebiješ sedmou).
+- **Eso** – další stojí, pokud nedá taky eso.
+- **Svršek** – hraje se na cokoli (ne na sedmu/eso v akci) a mění barvu.
+- Kdo se první zbaví všech karet, vyhrál.
 
-## Lokální build (volitelné)
+## Projekt
+- `game/` – projekt Godot 4.3 (`rules.gd` pravidla a AI, `main.gd` stůl a síť,
+  `net.gd` Wi-Fi a hledání stolů, `card.gd` karta s tažením/švihem).
+- APK staví GitHub Actions (`.github/workflows/android.yml`) a vydává ho jako
+  release `latest`. Testy: `godot --headless --path game --script res://tests/test_rules.gd`.
+- Lokální testy sítě: `godot --headless --path game -- --autohost --autoplay --games=5`
+  a v druhém okně `-- --autojoin=discover --autoplay --games=5`.
 
-```bash
-gradle wrapper --gradle-version 8.7
-./gradlew assembleDebug
-# APK: app/build/outputs/apk/debug/app-debug.apk
-```
-
-Vyžaduje JDK 17 a Android SDK (platform 34).
-
-## Licence grafiky karet
-Obrázky karet (`app/src/main/assets/cards/`) pocházejí z fotografie
-„Bohemian pattern.png“ od uživatele **Countakeshi**, Wikimedia Commons
+## Licence grafiky
+Obrázky karet (`game/cards/`) pocházejí z fotografie „Bohemian pattern.png“
+od uživatele **Countakeshi**, Wikimedia Commons
 (https://commons.wikimedia.org/wiki/File:Bohemian_pattern.png),
 licence **CC BY-SA 4.0** (https://creativecommons.org/licenses/by-sa/4.0/).
-Upraveno: rozřezáno na jednotlivé karty, upraven jas a kontrast.
-Upravené obrázky karet jsou šířeny pod stejnou licencí CC BY-SA 4.0.
+Upraveno: rozřezáno na karty, upraven jas a kontrast; ikony barev vyříznuty
+z týchž karet. Tyto upravené obrázky jsou šířeny pod stejnou licencí CC BY-SA 4.0.
+Písmo DejaVu – licence v `game/fonts/DejaVu-LICENSE.txt`.
