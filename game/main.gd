@@ -10,6 +10,8 @@ const OW := 50.0           # opponents' open cards
 const OH := 76.0
 const BOT_NAMES := ["Pepa", "Franta", "Jarda", "Mirek", "Zdeněk", "Vašek", "Láďa", "Karel", "Bohouš"]
 const SAVE := "user://prsi.cfg"
+const RELEASE_API := "https://api.github.com/repos/Jedn0ta/prsivoe/releases/tags/latest"
+const APK_URL := "https://github.com/Jedn0ta/prsivoe/releases/download/latest/prsi.apk"
 const ACC := ["sedmu", "osmu", "devítku", "desítku", "spodka", "svrška", "krále", "eso"]
 const ACC_PL := ["sedmy", "osmy", "devítky", "desítky", "spodky", "svršky", "krále", "esa"]
 const SLOT := {
@@ -93,6 +95,8 @@ var finder_status: Label
 var ip_edit: LineEdit
 var overlay: Control
 var players := {}
+var update_btn: Button
+var version_lbl: Label
 
 
 # =====================================================================
@@ -129,6 +133,7 @@ func _ready() -> void:
 	resized.connect(_relayout)
 	_show("menu")
 	_cmdline_hooks()
+	_check_update()
 
 
 func _full(parent: Control) -> Control:
@@ -310,6 +315,9 @@ func _build_menu() -> Control:
 		_save_cfg())
 	row.add_child(name_edit)
 	v.add_child(row)
+	update_btn = _btn("Stáhnout novou verzi", func(): OS.shell_open(APK_URL), 28)
+	update_btn.visible = false
+	v.add_child(update_btn)
 	v.add_child(_btn("Hrát s počítačem", func(): _show("setup")))
 	v.add_child(_btn("Založit stůl na Wi-Fi", _open_host))
 	v.add_child(_btn("Připojit se ke stolu", _open_finder))
@@ -325,6 +333,8 @@ func _build_menu() -> Control:
 	v.add_child(snd)
 	menu_score_lbl = _lbl("", 24, Color("#d8c393"), 520)
 	v.add_child(menu_score_lbl)
+	version_lbl = _lbl("verze " + _app_version(), 18, Color(1, 1, 1, 0.5))
+	v.add_child(version_lbl)
 	return a[0]
 
 
@@ -1945,3 +1955,39 @@ func _move(p: Vector2) -> void:
 func _tap(p: Vector2) -> void:
 	await _mouse(p, true)
 	await _mouse(p, false)
+
+
+# =====================================================================
+#  UPDATES (APK from GitHub; disabled in a Google Play build)
+# =====================================================================
+func _app_version() -> String:
+	return str(ProjectSettings.get_setting("application/config/version", "2.0"))
+
+
+static func version_number(v: String) -> int:
+	## "Prší 2.45" / "2.45" -> 45
+	var m := RegEx.create_from_string("2\\.(\\d+)").search(v)
+	return int(m.get_string(1)) if m else 0
+
+
+func _check_update() -> void:
+	if OS.has_feature("play_store") or not (OS.has_feature("android") or auto.has("updtest")):
+		return
+	var http := HTTPRequest.new()
+	add_child(http)
+	http.timeout = 10.0
+	http.request_completed.connect(func(result: int, code: int, _h: PackedStringArray, body: PackedByteArray):
+		http.queue_free()
+		if result != HTTPRequest.RESULT_SUCCESS or code != 200:
+			return
+		var d = JSON.parse_string(body.get_string_from_utf8())
+		if not (d is Dictionary):
+			return
+		var remote := version_number(str(d.get("name", "")))
+		var local := version_number(_app_version())
+		if auto.has("updtest"):
+			print("UPDATE_CHECK local=", local, " remote=", remote)
+		if remote > local and local > 0:
+			update_btn.text = "Stáhnout novou verzi 2.%d" % remote
+			update_btn.visible = true)
+	http.request(str(auto.get("updurl", RELEASE_API)), ["User-Agent: PrsiApp", "Accept: application/vnd.github+json"])

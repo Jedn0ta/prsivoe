@@ -57,6 +57,8 @@ jobs:
         run: |
           mkdir -p game/build
           sed -i "s/^version\/code=.*/version\/code=${GITHUB_RUN_NUMBER}/; s/^version\/name=.*/version\/name=\"2.${GITHUB_RUN_NUMBER}\"/" game/export_presets.cfg
+          sed -i "s/^config\/version=.*/config\/version=\"2.${GITHUB_RUN_NUMBER}\"/" game/project.godot
+          grep config/version game/project.godot
           ./godot --headless --path game --export-release "Android" build/prsi.apk
           ls -la game/build
           test -s game/build/prsi.apk
@@ -72,7 +74,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: latest
-          name: Prší – nejnovější verze
+          name: Prší 2.${{ github.run_number }}
           body: Hospodské Prší v enginu Godot – instalovatelné APK (stáhni prsi.apk). Hra s počítačem i přes Wi-Fi.
           files: game/build/prsi.apk
           make_latest: true
