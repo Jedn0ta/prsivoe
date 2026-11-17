@@ -1,29 +1,36 @@
-# Prší – hospodská klasika (Godot 4)
+# Prší – hospodská klasika u baru (Godot 4)
 
 Česká karetní hra **Prší** pro Android s fotkami skutečných jednohlavých
-mariášek. Hraje se proti počítači (Pepa, Franta) nebo s kamarádem **přes Wi-Fi**.
+mariášek. U baru až pro 10 hráčů s 5 balíčky – proti počítači nebo s kamarády **přes Wi-Fi**.
 
 **Stáhnout APK:** https://github.com/Jedn0ta/prsivoe/releases/download/latest/prsi.apk
 
 ## Ovládání
-- **Táhni kartu** prstem na odhazovací balíček, nebo ji **švihni nahoru**.
-- **Ťukni** na kartu (zvedne se) a ťukni znovu → zahraje se.
-- **Ťukni na balík** = líznout si / vzít trest za sedmu / stát po esu.
+- **Táhni kartu** prstem na odhoz, nebo ji **švihni nahoru**.
+- **Víc stejných karet:** ťukni na ně (zvednou se) a dej **Vyložit**, nebo jednu z nich přetáhni.
+- **Ťukni na balík** = líznout si / vzít trest za sedmy / stát po esu.
 - Svršek → vybereš barvu.
 
+## U baru až pro 10 hráčů
+- 2–10 hráčů, 1–5 balíčků (výchozí 5 = 160 karet). Volná místa doplní počítač.
+- **Rozdávající** zvolí, kolik karet dá **do ruky (min. 4)** a **otevřeně na stůl (min. 2)**;
+  max. 13 karet na hráče, aby v balíku zbylo dost na lízání.
+- Další kolo rozdává ten, komu zbylo **nejvíc karet**.
+
 ## Hra přes Wi-Fi
-1. Oba telefony na stejné Wi-Fi.
-2. Jeden dá **Založit stůl na Wi-Fi**, může přisadit i Pepu (počítač).
-3. Druhý dá **Připojit se ke stolu** – stůl se objeví v seznamu sám.
+1. Všechny telefony na stejné Wi-Fi.
+2. Jeden dá **Založit stůl na Wi-Fi**, nastaví počet míst a balíčků.
+3. Ostatní (až 9) dají **Připojit se ke stolu** – stůl se objeví v seznamu sám.
    Kdyby ne, opiš IP adresu, kterou ukazuje hostitel.
-4. Hostitel dá **Rozdat karty**.
+4. Hostitel dá **Začít hrát**.
 
 ## Pravidla
-- Přikládá se karta stejné **barvy** nebo **hodnoty**.
-- **Sedma** – další bere 2, sedmy se sčítají (přebiješ sedmou).
+- Přikládá se karta stejné **barvy** nebo **hodnoty**; stejné hodnoty lze dát **víc najednou**.
+- Každý má před sebou **otevřené karty** – hraje je jen on, ostatní je vidí.
+  Vyhrává, kdo se zbaví **ruky i otevřených karet**.
+- **Sedma** – další bere 2 za každou sedmu, sedmy se sčítají **bez stropu** (přebiješ sedmou).
 - **Eso** – další stojí, pokud nedá taky eso.
 - **Svršek** – hraje se na cokoli (ne na sedmu/eso v akci) a mění barvu.
-- Kdo se první zbaví všech karet, vyhrál.
 
 ## Projekt
 - `game/` – projekt Godot 4.3 (`rules.gd` pravidla a AI, `main.gd` stůl a síť,

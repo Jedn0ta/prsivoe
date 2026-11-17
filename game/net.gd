@@ -37,7 +37,7 @@ func is_online() -> bool:
 func host(name: String) -> int:
 	leave()
 	var peer := ENetMultiplayerPeer.new()
-	var err := peer.create_server(GAME_PORT, 3)
+	var err := peer.create_server(GAME_PORT, 9)
 	if err != OK:
 		return err
 	multiplayer.multiplayer_peer = peer
