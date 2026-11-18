@@ -1,7 +1,7 @@
 shader_type canvas_item;
 // Rounded corners for card photos.
-uniform float radius = 0.055;
-uniform float ratio = 1.52;
+uniform float radius = 0.07;
+uniform float ratio = 1.62;
 void fragment() {
 	vec2 p = vec2(UV.x, UV.y * ratio);
 	vec2 hs = vec2(0.5, 0.5 * ratio);

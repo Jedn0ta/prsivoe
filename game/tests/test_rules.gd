@@ -28,8 +28,9 @@ func _init():
 				errors += 1
 				print("REJECTED ", m, " game ", g)
 				break
-			if m.has("cards") and m["cards"].size() > 1:
-				multi += 1
+			if m.has("cards") and m["cards"].size() != 1:
+				errors += 1
+				print("MULTI PLAY ", m)
 			max_pen = maxi(max_pen, r.penalty)
 			var total := r.deck.size() + r.discard.size()
 			for i in n:
@@ -53,18 +54,20 @@ func _init():
 	r2.top_suit = 0; r2.penalty = 0; r2.ace_stop = false; r2.cur = 0
 	r2.hands[0] = [8 + 0, 32 + 8 + 0, 64 + 0]   # sedma kule (x2), sedma srdce
 	r2.opens[0] = [16 + 3, 96 + 16 + 3]         # desitka listy x2
-	assert(not r2.play(0, [8, 40]))             # two sevens of kule: neither matches srdce/9
-	assert(r2.play(0, [8, 40, 64]))             # sedma srdce makes the group playable
-	assert(r2.discard.back() == 40 or r2.discard.back() == 8)
-	assert(r2.penalty == 6 and r2.cur == 1)
-	r2.hands[1] = [5 * 1 + 24 + 0 * 0]          # sedma zaludy (24)
-	r2.hands[1] = [24]
-	assert(r2.play(1, [24]) and r2.penalty == 8)
-	assert(r2.pass_turn(2) and r2.penalty == 0)
-	# open cards: play both tens, then win when hand empty too
-	r2.cur = 0; r2.discard.append(16 + 1); r2.top_suit = 2
+	assert(not r2.play(0, [8]))                 # sedma kule does not match srdce/9
+	assert(not r2.play(0, [64, 8]))             # never two cards at once
+	assert(r2.play(0, [64]) and r2.penalty == 2 and r2.cur == 1)
+	r2.hands[1] = [24]                          # sedma zaludy
+	assert(r2.play(1, [24]) and r2.penalty == 4)
+	r2.hands[2] = [72]                          # sedma kule (3. balicek)
+	assert(r2.play(2, [72]) and r2.penalty == 6)  # sevens stack without limit
+	assert(r2.pass_turn(0) and r2.penalty == 0 and r2.hands[0].size() == 8)
+	# open cards: win only when hand AND open cards are empty
+	r2.cur = 0; r2.discard.append(16 + 1); r2.top_suit = 2; r2.penalty = 0; r2.ace_stop = false
 	r2.hands[0] = []
-	assert(r2.play(0, [19, 96 + 19]) and r2.winner == 0)
+	assert(r2.play(0, [19]) and r2.winner < 0 and r2.opens[0].size() == 1)
+	r2.cur = 0
+	assert(r2.play(0, [96 + 19]) and r2.winner == 0)
 	assert(r2.loser >= 1)
 	assert(Rules.max_per_player(10, 5) == 13)
 	print("games=", games, " avg_turns=", float(turns_total) / games, " multi_plays=", multi, " max_penalty=", max_pen, " errors=", errors)

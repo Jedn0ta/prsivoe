@@ -2,7 +2,7 @@ class_name Rules
 extends RefCounted
 ## Pure game logic for pub Prší. No graphics, no networking.
 ## Card id = deck * 32 + base; base: suit = base / 8, rank = base % 8.
-## Variant: several decks, open cards per player, several cards of one rank at once,
+## Variant: several decks, open cards per player, one card per turn,
 ## sevens stack without limit, the loser deals the next round.
 
 const SUITS := ["srdce", "kule", "listy", "zaludy"]
@@ -184,7 +184,7 @@ func cards_left(p: int) -> int:
 
 
 func play(p: int, cards: Array, suit: int = -1) -> bool:
-	if winner >= 0 or p != cur or cards.is_empty():
+	if winner >= 0 or p != cur or cards.size() != 1:
 		return false
 	var seen := {}
 	for c in cards:
@@ -294,19 +294,13 @@ func ai_move(p: int) -> Dictionary:
 		if opens[p].has(c):
 			v += 1.5
 		for k in mine:
-			if k != c and rank_of(k) == r:
-				v += 1.2
-			elif k != c and suit_of(k) == suit_of(c):
+			if k != c and suit_of(k) == suit_of(c):
 				v += 0.5
 		v += rng.randf()
 		if v > best_score:
 			best_score = v
 			best = c
 	var group: Array = [best]
-	if rank_of(best) != RQ or mine.size() <= 3:
-		for k in mine:
-			if k != best and rank_of(k) == rank_of(best):
-				group.append(k)
 	var suit := -1
 	if rank_of(best) == RQ:
 		suit = best_suit_for(p, group)

@@ -7,7 +7,7 @@ mariášek. U baru až pro 10 hráčů s 5 balíčky – proti počítači nebo 
 
 ## Ovládání
 - **Táhni kartu** prstem na odhoz, nebo ji **švihni nahoru**.
-- **Víc stejných karet:** ťukni na ně (zvednou se) a dej **Vyložit**, nebo jednu z nich přetáhni.
+- **Ťukni** na kartu (zvedne se) a ťukni znovu nebo dej **Vyložit** → zahraje se.
 - **Ťukni na balík** = líznout si / vzít trest za sedmy / stát po esu.
 - Svršek → vybereš barvu.
 
@@ -25,10 +25,10 @@ mariášek. U baru až pro 10 hráčů s 5 balíčky – proti počítači nebo 
 4. Hostitel dá **Začít hrát**.
 
 ## Pravidla
-- Přikládá se karta stejné **barvy** nebo **hodnoty**; stejné hodnoty lze dát **víc najednou**.
+- Přikládá se karta stejné **barvy** nebo **hodnoty** – vždy **jen jedna karta za tah**.
 - Každý má před sebou **otevřené karty** – hraje je jen on, ostatní je vidí.
   Vyhrává, kdo se zbaví **ruky i otevřených karet**.
-- **Sedma** – další bere 2 za každou sedmu, sedmy se sčítají **bez stropu** (přebiješ sedmou).
+- **Sedma** – další bere 2, sedmy se mezi hráči sčítají **bez stropu** (přebiješ sedmou).
 - **Eso** – další stojí, pokud nedá taky eso.
 - **Svršek** – hraje se na cokoli (ne na sedmu/eso v akci) a mění barvu.
 
@@ -45,6 +45,8 @@ Obrázky karet (`game/cards/`) pocházejí z fotografie „Bohemian pattern.png�
 od uživatele **Countakeshi**, Wikimedia Commons
 (https://commons.wikimedia.org/wiki/File:Bohemian_pattern.png),
 licence **CC BY-SA 4.0** (https://creativecommons.org/licenses/by-sa/4.0/).
-Upraveno: rozřezáno na karty, upraven jas a kontrast; ikony barev vyříznuty
+Upraveno: každá karta vyříznuta podle tištěného rámečku a narovnána (perspektivní korekce); ikony barev vyříznuty
 z týchž karet. Tyto upravené obrázky jsou šířeny pod stejnou licencí CC BY-SA 4.0.
 Písmo DejaVu – licence v `game/fonts/DejaVu-LICENSE.txt`.
+
+Deska baru v pozadí je z vlastní fotografie autora hry.

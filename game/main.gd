@@ -3,11 +3,11 @@ extends Control
 ## The host (or the local game) owns the Rules object; everybody renders from a "view".
 
 const CW := 150.0          # card in my hand
-const CH := 228.0
+const CH := 243.0
 const TW := 112.0          # cards on the bar (deck, pile, my open cards)
-const TH := 170.0
+const TH := 181.0
 const OW := 50.0           # opponents' open cards
-const OH := 76.0
+const OH := 81.0
 const BOT_NAMES := ["Pepa", "Franta", "Jarda", "Mirek", "Zdeněk", "Vašek", "Láďa", "Karel", "Bohouš"]
 const SAVE := "user://prsi.cfg"
 const RELEASE_API := "https://api.github.com/repos/Jedn0ta/prsivoe/releases/tags/latest"
@@ -15,7 +15,7 @@ const APK_URL := "https://github.com/Jedn0ta/prsivoe/releases/download/latest/pr
 const ACC := ["sedmu", "osmu", "devítku", "desítku", "spodka", "svrška", "krále", "eso"]
 const ACC_PL := ["sedmy", "osmy", "devítky", "desítky", "spodky", "svršky", "krále", "esa"]
 const SLOT := {
-	"L1": Vector2(0.20, 0.165), "L2": Vector2(0.20, 0.305), "L3": Vector2(0.20, 0.545), "L4": Vector2(0.20, 0.655),
+	"L1": Vector2(0.31, 0.165), "L2": Vector2(0.20, 0.305), "L3": Vector2(0.20, 0.545), "L4": Vector2(0.20, 0.655),
 	"T": Vector2(0.5, 0.075),
 	"R1": Vector2(0.80, 0.165), "R2": Vector2(0.80, 0.305), "R3": Vector2(0.80, 0.545), "R4": Vector2(0.80, 0.655)}
 const LAYOUT := {
@@ -605,7 +605,7 @@ func _begin_round() -> void:
 		if o["kind"] == "peer" and o != s:
 			s_info.rpc_id(o["peer"], txt)
 	if s["kind"] == "me":
-		if auto.has("autoplay"):
+		if auto.has("autoplay") or auto.has("inputtest"):
 			_deal(d, 4 + randi() % 3, 2 + randi() % 2)
 		else:
 			_show_deal_dialog(_limits(), func(h: int, o: int): _deal(d, h, o))
@@ -1091,8 +1091,7 @@ func _on_card_dropped(nd: CardNode, pos: Vector2, vel: Vector2, travel: Vector2)
 	var flick := vel.y < -550.0 and travel.y < -40.0
 	var lifted := travel.y < -150.0
 	if pile_rect.has_point(pos) or flick or lifted:
-		var group: Array = sel.duplicate() if sel.has(nd.card) else [nd.card]
-		_try_play(group)
+		_try_play([nd.card])
 	else:
 		_layout_hand(true)
 
@@ -1100,11 +1099,9 @@ func _on_card_dropped(nd: CardNode, pos: Vector2, vel: Vector2, travel: Vector2)
 func _on_card_tapped(nd: CardNode) -> void:
 	var c := nd.card
 	if sel.has(c):
-		sel.erase(c)
-	elif not sel.is_empty() and Rules.rank_of(sel[0]) != Rules.rank_of(c):
-		sel = [c]
-	else:
-		sel.append(c)
+		_try_play([c])      # second tap on the raised card plays it
+		return
+	sel = [c]
 	_sfx("draw")
 	_layout_hand(true)
 	_update_play_btn()
@@ -1123,7 +1120,7 @@ func _update_play_btn() -> void:
 	hint_lbl.visible = not show
 	if show:
 		var r := Rules.rank_of(sel[0])
-		play_btn.text = ("Vyložit %s" % ACC[r]) if sel.size() == 1 else ("Vyložit %d× %s" % [sel.size(), ACC_PL[r]])
+		play_btn.text = "Vyložit %s" % ACC[r]
 		play_btn.disabled = _group_ok(sel).is_empty()
 		play_btn.reset_size()
 		var y0 := _deck_center().y + TH / 2.0 + 50.0
@@ -1142,7 +1139,7 @@ func _ask_suit(group: Array) -> void:
 	_update_play_btn()
 	var a := _overlay_panel(560)
 	var v: VBoxContainer = a[1]
-	v.add_child(_lbl("Svršek!" if group.size() == 1 else "%d svršci!" % group.size(), 54, Color("#f3d48a")))
+	v.add_child(_lbl("Svršek!", 54, Color("#f3d48a")))
 	v.add_child(_lbl("Na jakou barvu měníš?", 30))
 	var g := GridContainer.new()
 	g.columns = 2
@@ -1241,11 +1238,7 @@ func _auto_move() -> void:
 	var mine: Array = (view["hand"] as Array) + _my_open()
 	for c in mine:
 		if _can_play_view(c):
-			var group: Array = [c]
-			for k in mine:
-				if k != c and Rules.rank_of(k) == Rules.rank_of(c):
-					group.append(k)
-			_send_play(group, Rules.suit_of(mine[0]) if Rules.rank_of(c) == Rules.RQ else -1)
+			_send_play([c], Rules.suit_of(mine[0]) if Rules.rank_of(c) == Rules.RQ else -1)
 			return
 	_send_pass()
 
@@ -1456,16 +1449,16 @@ func _update_opponents() -> void:
 			b.texture = BACK
 			b.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 			b.stretch_mode = TextureRect.STRETCH_SCALE
-			b.size = Vector2(30, 46)
+			b.size = Vector2(30, 49)
 			b.pivot_offset = b.size / 2.0
 			b.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			b.material = CardNode._mat
 			var t := 0.0 if shown == 1 else (float(i) - (shown - 1) / 2.0) / ((shown - 1) / 2.0)
 			if side == "L":
-				b.position = Vector2(4, cen.y - 23 + t * 26.0)
+				b.position = Vector2(4, cen.y - 24 + t * 26.0)
 				b.rotation = PI / 2.0 + t * 0.25
 			elif side == "R":
-				b.position = Vector2(size.x - 34, cen.y - 23 + t * 26.0)
+				b.position = Vector2(size.x - 34, cen.y - 24 + t * 26.0)
 				b.rotation = -PI / 2.0 + t * 0.25
 			else:
 				b.position = Vector2(cen.x - 15 + t * 30.0, cen.y - OH / 2.0 - 46)
@@ -1578,7 +1571,7 @@ func _update_indicators() -> void:
 		elif pen > 0:
 			hint_lbl.text = "Sedma! Přebij sedmou, nebo ťukni na balík (bereš %d)" % pen if has_move else "Sedma – ťukni na balík, bereš %d." % pen
 		elif has_move:
-			hint_lbl.text = "Tvůj tah – táhni kartu na stůl. Víc stejných: ťukni na ně a vylož."
+			hint_lbl.text = "Tvůj tah – táhni kartu na stůl nebo ji švihni nahoru"
 		else:
 			hint_lbl.text = "Nemáš co dát – ťukni na balík"
 	else:
@@ -1897,7 +1890,7 @@ func _input_test(kind: String) -> void:
 			if c >= 0:
 				await get_tree().create_timer(0.9).timeout
 				var nd: CardNode = hand_nodes[c]
-				var a := nd.position + nd.size * nd.scale / 2.0 + (nd.size - nd.size * nd.scale) / 2.0
+				var a := nd.position + nd.size / 2.0 + Vector2(-nd.size.x * nd.scale.x * 0.3, 0).rotated(nd.rotation)
 				var b := _pile_center() if kind == "drag" else (a + Vector2(130, -25) if kind == "side" else a + Vector2(0, -170))
 				var before: int = (view["hand"] as Array).size() + _my_open().size()
 				if kind == "tap" or kind == "multi":
@@ -1920,7 +1913,7 @@ func _input_test(kind: String) -> void:
 				var ok: bool = after == expect or int(view["winner"]) >= 0
 				if kind == "side":
 					ok = after == before
-				print("INPUTTEST ", kind, " card=", Rules.card_name(c), " ", before, "->", after, " -> ", "OK" if ok else "FAIL")
+				print("INPUTTEST ", kind, " card=", Rules.card_name(c), " open=", open_order.has(c), " ", before, "->", after, " -> ", "OK" if ok else "FAIL", " msg=", msg_lbl.text)
 				get_tree().quit()
 				return
 			if kind != "multi" or i % 10 == 0:
